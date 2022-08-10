@@ -1,0 +1,18 @@
+// Variables
+@import './partials/variables';
+@import './partials/mixins';
+
+// Reset
+@import 'normalize.css/normalize';
+@import './partials/reset';
+// @import './partials/fonts';
+
+// Swiper, AOS, Select, Grid
+// @import 'swiper/swiper';
+// @import 'aos/dist/aos';
+// @import "./partials/grid";
+@import "./modules/choices";
+
+// Main
+@import './modules/common';
+@import './modules/main';
