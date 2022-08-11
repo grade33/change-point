@@ -25,6 +25,7 @@ export const scripts = () => {
       },
       devtool: app.isDev ? 'source-map' : false
     }))
+    .pipe(app.plugins.replace(/@img\//g, '../img/'))
     .pipe(app.gulp.dest(app.path.build.scripts))
     .pipe(app.plugins.browsersync.stream())
 }

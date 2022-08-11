@@ -9,3 +9,42 @@ html(lang="ru")
     link(rel="stylesheet", href="./css/style.min.css")
     script(defer src="./js/app.min.js")
   body
+    .change-point
+      .container.change-point__container
+        form.block.block_crypto(action="#")
+          h2.block__title Give
+          input.active-select-value.visually-hidden(type="text")
+          select.select(name="give")
+          .block__field-wrap
+            input.block__field(type="number" name="give-value" min="50" max="30000")
+            span.block__field-crypto USDT
+          .block__range
+            span.block__range-text
+              | Min: 
+              span.block__range-text_min 50
+            span.block__range-text
+              | Max: 
+              span.block__range-text_max 30,000
+      
+        button.swap(type="button")
+          svg.swap__icon
+            use(xlink:href="@img/sprite.svg#swap")
+        form.block.block_fiat(action="#")
+          h2.block__title Receive
+          .block__currency
+            img.block__currency-icon(src="@img/fiat-icon.svg", alt="")
+            span.block__currency-text USD
+          .block__field-wrap
+            input.block__field(type="number" name="give-value" min="50" max="30000")
+            span.block__field-crypto USDT
+          .block__range
+            span.block__range-text
+              | Min: 
+              span.block__range-text_min 50
+            span.block__range-text
+              | Max: 
+              span.block__range-text_max 30,000
+          button.block__exchange.btn(type="submit") Exchange
+          
+        
+        

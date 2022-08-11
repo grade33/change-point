@@ -1,0 +1,37 @@
+body {
+  font-family: noto, sans-serif;
+  font-style: normal;
+  font-weight: 400;
+  background: #f1f6f9;
+  $black: #3E435D;
+}
+
+input {
+  padding: 0;
+  padding-bottom: 2px;
+  border: none;
+  border-bottom: 1px solid $black;
+  width: 100%;
+}
+
+.btn {
+  text-align: center;
+  font-size: 16px;
+  line-height: 26px;
+  width: 100%;
+  padding: 12px 0;
+  color: $white;
+  background: $blue;
+  border-radius: 8px;
+  transition: background-color .2s ease-in-out;
+  &:hover,
+  &:focus-visible,
+  &:active {
+    background: darken($blue, 10%);
+  }
+}
+
+.container {
+  max-width: 100%;
+  padding: 0 20px;
+}
