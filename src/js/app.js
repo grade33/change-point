@@ -2,9 +2,4 @@
 // import AOS from 'aos';
 // AOS.init();
 
-
-import * as functions from "./modules/functions.js";
-
-functions.isWebp();
-
-import change from "./modules/change.js";
+import main from "./modules/main.js";
