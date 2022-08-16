@@ -158,9 +158,13 @@ let sellBuy = 'sell';
         cryptoMinValue.innerHTML = activeCrypto.minValue
         fiatMinValue.innerHTML = activeCrypto.minValue * activeCrypto.limits[0].sellPrice
       } else if (input === cryptoField) {
-        fiatField.value = +(cryptoField.value * activeCrypto.limits[0].sellPrice).toFixed(1)
+        let idx = 0
+        if(cryptoField.value > activeCrypto.limits[1].minAmount) idx = 1
+        fiatField.value = +(cryptoField.value * activeCrypto.limits[idx].sellPrice).toFixed(1)
       } else if (input === fiatField) {
-        cryptoField.value = +(fiatField.value / activeCrypto.limits[0].sellPrice).toFixed(1)
+        let idx = 0
+        if(+(fiatField.value / activeCrypto.limits[idx].sellPrice).toFixed(1) > activeCrypto.limits[1].minAmount) idx = 1
+        cryptoField.value = +(fiatField.value / activeCrypto.limits[idx].sellPrice).toFixed(1)
       }
     } else if (sellBuy === 'buy') {
       if (bool) {
@@ -169,9 +173,13 @@ let sellBuy = 'sell';
         cryptoMinValue.innerHTML = activeCrypto.minValue
         fiatMinValue.innerHTML = activeCrypto.minValue * activeCrypto.limits[0].buyPrice
       } else if (input === fiatField) {
-        cryptoField.value = +(fiatField.value * activeCrypto.limits[0].buyPrice).toFixed(1)
+        let idx = 0
+        if(+(fiatField.value * activeCrypto.limits[idx].buyPrice).toFixed(1) > activeCrypto.limits[1].minAmount) idx = 1
+        cryptoField.value = +(fiatField.value * activeCrypto.limits[idx].buyPrice).toFixed(1)
       } else if (input === cryptoField) {
-        fiatField.value = +(cryptoField.value / activeCrypto.limits[0].buyPrice).toFixed(1)
+        let idx = 0
+        if(cryptoField.value > activeCrypto.limits[1].minAmount) idx = 1
+        fiatField.value = +(cryptoField.value / activeCrypto.limits[idx].buyPrice).toFixed(1)
       }
     }
     return activeCrypto

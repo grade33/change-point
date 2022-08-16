@@ -7,6 +7,9 @@ export const scripts = () => {
       output: {
         filename: 'app.min.js'
       },
+      experiments: {
+        topLevelAwait: true
+      },
       module: {
         rules: [{
           test: /\.m?js$/,
@@ -36,6 +39,9 @@ export const scriptsBackend = () => {
       mode: 'production',
       output: {
         filename: 'app.min.js'
+      },
+      experiments: {
+        topLevelAwait: true
       },
       optimization: {
         minimize: false,
