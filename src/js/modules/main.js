@@ -27,57 +27,57 @@ let sellBuy = 'sell';
 
   const resp = await fetch("https://api.airtable.com/v0/app9N1wL2PpG3Vn4F/Table%201?api_key=keyM9WSYH9Taitq6S");
   const data= await resp.json();
-  
-  
+
+
   cryptoArr = data.records.map(item => {
-  
+
     const {minValue, maxValue, name, ...limitsDirtyData} = item.fields;
-  
+
     const limitsPreArr = Object.keys(limitsDirtyData).map(item => {
       return {
         name: item,
         limitData: limitsDirtyData[item]
       }
     });
-  
+
     const limits = [];
-  
+
     for(let i=0; i < limitsPreArr.length; i++){
       const limitPreArrItem = limitsPreArr[i];
       const limitAmount = limitPreArrItem.name.split("_")[1];
       const limitType = limitPreArrItem.name.split("_")[2];
       const limitValue = limitPreArrItem.limitData;
-  
+
       const index = limits.findIndex(existingLimitItem => existingLimitItem.minAmount === limitAmount);
-  
-  
+
+
       if(index !== -1){
         // FOUND
         limits[index][limitType+"Price"] = 1+ limitValue;
-  
+
       } else {
         // NOT FOUND
         const newLimit = {
           minAmount: limitAmount,
         }
         newLimit[limitType+"Price"] = 1+ limitValue;
-  
+
         limits.push(newLimit);
       }
-  
+
     }
-  
-  
-  
+
+
+
     return {
       name,
       minValue,
       maxValue,
-  
+
       limits
     }
   })
-  
+
 }
 
 // Add items to select
@@ -135,8 +135,15 @@ let sellBuy = 'sell';
   let fiatField = document.querySelector('.block_fiat .block__field')
   let cryptoMinValue = document.querySelector('.block_crypto .block__range-text_min')
   let fiatMinValue = document.querySelector('.block_fiat .block__range-text_min')
+  let swapBtn = document.querySelector('.swap')
 
   sellBuyFunc(null, true)
+
+  swapBtn.addEventListener('click', () => {
+    setTimeout(() => {
+      sellBuyFunc(null, true)
+    }, 100);
+  })
 
   cryptoField.addEventListener('input', () => {
     sellBuyFunc(cryptoField)
@@ -151,38 +158,33 @@ let sellBuy = 'sell';
 
   function sellBuyFunc(input, bool = false) {
     let activeCrypto = cryptoArr.find(obj => obj.name == selectedCryptoInput.value)
+    let idx = 0
+    activeCrypto.limits.forEach((obj, index) => {
+      if (cryptoField.value >= obj.minAmount) idx = index
+    });
     if (sellBuy === 'sell') {
       if (bool) {
         cryptoField.value = activeCrypto.minValue
-        fiatField.value = activeCrypto.minValue * activeCrypto.limits[0].sellPrice
+        fiatField.value = +(activeCrypto.minValue * activeCrypto.limits[0].sellPrice).toFixed(1)
         cryptoMinValue.innerHTML = activeCrypto.minValue
-        fiatMinValue.innerHTML = activeCrypto.minValue * activeCrypto.limits[0].sellPrice
+        fiatMinValue.innerHTML = +(activeCrypto.minValue * activeCrypto.limits[0].sellPrice).toFixed(1)
       } else if (input === cryptoField) {
-        let idx = 0
-        if(cryptoField.value > activeCrypto.limits[1].minAmount) idx = 1
         fiatField.value = +(cryptoField.value * activeCrypto.limits[idx].sellPrice).toFixed(1)
       } else if (input === fiatField) {
-        let idx = 0
-        if(+(fiatField.value / activeCrypto.limits[idx].sellPrice).toFixed(1) > activeCrypto.limits[1].minAmount) idx = 1
         cryptoField.value = +(fiatField.value / activeCrypto.limits[idx].sellPrice).toFixed(1)
       }
     } else if (sellBuy === 'buy') {
       if (bool) {
         cryptoField.value = activeCrypto.minValue
-        fiatField.value = activeCrypto.minValue / activeCrypto.limits[0].buyPrice
+        fiatField.value = +(activeCrypto.minValue / activeCrypto.limits[0].buyPrice).toFixed(1)
         cryptoMinValue.innerHTML = activeCrypto.minValue
-        fiatMinValue.innerHTML = activeCrypto.minValue * activeCrypto.limits[0].buyPrice
+        fiatMinValue.innerHTML = +(activeCrypto.minValue / activeCrypto.limits[0].buyPrice).toFixed(1)
       } else if (input === fiatField) {
-        let idx = 0
-        if(+(fiatField.value * activeCrypto.limits[idx].buyPrice).toFixed(1) > activeCrypto.limits[1].minAmount) idx = 1
         cryptoField.value = +(fiatField.value * activeCrypto.limits[idx].buyPrice).toFixed(1)
       } else if (input === cryptoField) {
-        let idx = 0
-        if(cryptoField.value > activeCrypto.limits[1].minAmount) idx = 1
         fiatField.value = +(cryptoField.value / activeCrypto.limits[idx].buyPrice).toFixed(1)
       }
     }
-    return activeCrypto
   }
 }
 // Swap Fiat-Crypto
