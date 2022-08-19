@@ -18,67 +18,119 @@
 import Choices from "choices.js";
 
 
-let cryptoArr = null
+let cryptoArr = [
+  {
+  "name": "USDP",
+  "minValue": 100,
+  "mamValue": 1000000,
+  "limits": [
+    {
+      "minAmount": "1000",
+      "sellPrice": 1.2,
+      "buyPrice": 1.3
+    },
+    {
+      "minAmount": "10000",
+      "sellPrice": 1.3,
+      "buyPrice": 1.4
+    }
+  ]
+},
+{
+  "name": "Tether",
+  "minValue": 100,
+  "mamValue": 1000000,
+  "limits": [
+    {
+      "minAmount": "1000",
+      "sellPrice": 1.2,
+      "buyPrice": 1.3
+    },
+    {
+      "minAmount": "10000",
+      "sellPrice": 1.3,
+      "buyPrice": 1.4
+    }
+  ]
+},
+{
+  "name": "USDC",
+  "minValue": 100,
+  "mamValue": 1000000,
+  "limits": [
+    {
+      "minAmount": "1000",
+      "sellPrice": 1.2,
+      "buyPrice": 1.3
+    },
+    {
+      "minAmount": "10000",
+      "sellPrice": 1.3,
+      "buyPrice": 1.4
+    }
+  ]
+}
+]
 
 let sellBuy = 'sell';
 
 // Request to the server
-{
+// {
 
-  const resp = await fetch("https://api.airtable.com/v0/app9N1wL2PpG3Vn4F/Table%201?api_key=keyM9WSYH9Taitq6S");
-  const data= await resp.json();
-
-
-  cryptoArr = data.records.map(item => {
-
-    const {minValue, maxValue, name, ...limitsDirtyData} = item.fields;
-
-    const limitsPreArr = Object.keys(limitsDirtyData).map(item => {
-      return {
-        name: item,
-        limitData: limitsDirtyData[item]
-      }
-    });
-
-    const limits = [];
-
-    for(let i=0; i < limitsPreArr.length; i++){
-      const limitPreArrItem = limitsPreArr[i];
-      const limitAmount = limitPreArrItem.name.split("_")[1];
-      const limitType = limitPreArrItem.name.split("_")[2];
-      const limitValue = limitPreArrItem.limitData;
-
-      const index = limits.findIndex(existingLimitItem => existingLimitItem.minAmount === limitAmount);
+//   const resp = await fetch("https://api.airtable.com/v0/app9N1wL2PpG3Vn4F/Table%201?api_key=keyM9WSYH9Taitq6S");
+//   const data= await resp.json();
 
 
-      if(index !== -1){
-        // FOUND
-        limits[index][limitType+"Price"] = 1+ limitValue;
+//   cryptoArr = data.records.map(item => {
 
-      } else {
-        // NOT FOUND
-        const newLimit = {
-          minAmount: limitAmount,
-        }
-        newLimit[limitType+"Price"] = 1+ limitValue;
+//     const {minValue, maxValue, name, ...limitsDirtyData} = item.fields;
 
-        limits.push(newLimit);
-      }
+//     const limitsPreArr = Object.keys(limitsDirtyData).map(item => {
+//       return {
+//         name: item,
+//         limitData: limitsDirtyData[item]
+//       }
+//     });
 
-    }
+//     const limits = [];
+
+//     for(let i=0; i < limitsPreArr.length; i++){
+//       const limitPreArrItem = limitsPreArr[i];
+//       const limitAmount = limitPreArrItem.name.split("_")[1];
+//       const limitType = limitPreArrItem.name.split("_")[2];
+//       const limitValue = limitPreArrItem.limitData;
+
+//       const index = limits.findIndex(existingLimitItem => existingLimitItem.minAmount === limitAmount);
+
+
+//       if(index !== -1){
+//         // FOUND
+//         limits[index][limitType+"Price"] = 1+ limitValue;
+
+//       } else {
+//         // NOT FOUND
+//         const newLimit = {
+//           minAmount: limitAmount,
+//         }
+//         newLimit[limitType+"Price"] = 1+ limitValue;
+
+//         limits.push(newLimit);
+//       }
+
+//     }
 
 
 
-    return {
-      name,
-      minValue,
-      maxValue,
+//     return {
+//       name,
+//       minValue,
+//       maxValue,
 
-      limits
-    }
-  })
+//       limits
+//     }
+//   })
 
-}
+// }
 
 // Add items to select
 {
@@ -160,7 +212,9 @@ let sellBuy = 'sell';
     let activeCrypto = cryptoArr.find(obj => obj.name == selectedCryptoInput.value)
     let idx = 0
     activeCrypto.limits.forEach((obj, index) => {
-      if (cryptoField.value >= obj.minAmount) idx = index
+      if (+cryptoField.value >= +obj.minAmount) {
+        idx = index
+      }
     });
     if (sellBuy === 'sell') {
       if (bool) {
