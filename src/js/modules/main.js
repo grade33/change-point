@@ -19,50 +19,47 @@ import Choices from "choices.js";
 
 
 let cryptoArr = [{
-    "name": "USDP",
+    "name": "USDT",
     "minValue": 100,
-    "maxValue": 1000000,
+    "maxValue": 300,
+    "usdRub": "70",
     "limits": [{
-        "minAmount": "1000",
-        "sellPrice": 1.2,
-        "buyPrice": 1.3
+        "minAmount": "100",
+        "sellPrice": 0.9468,
+        "buyPrice": 0.8468
       },
       {
-        "minAmount": "10000",
-        "sellPrice": 1.3,
-        "buyPrice": 1.4
-      }
-    ]
-  },
-  {
-    "name": "Tether",
-    "minValue": 100,
-    "maxValue": 1000000,
-    "limits": [{
-        "minAmount": "1000",
-        "sellPrice": 1.2,
-        "buyPrice": 1.3
+        "minAmount": "3000",
+        "sellPrice": 0.959,
+        "buyPrice": 0.859
       },
       {
-        "minAmount": "10000",
-        "sellPrice": 1.3,
-        "buyPrice": 1.4
+        "minAmount": "30000",
+        "sellPrice": 0.969,
+        "buyPrice": 0.869
       }
     ]
   },
   {
     "name": "USDC",
-    "minValue": 100,
-    "maxValue": 10000,
+    "description": "Britain is the capital of my Great English Britain is the capital of my Great English ",
+    "minValue": 200,
+    "maxValue": 1000000,
+    "usdRub": "70",
     "limits": [{
-        "minAmount": "1000",
-        "sellPrice": 1.2,
-        "buyPrice": 1.3
+        "minAmount": "100",
+        "sellPrice": 0.949,
+        "buyPrice": 0.849
       },
       {
-        "minAmount": "10000",
-        "sellPrice": 1.3,
-        "buyPrice": 1.4
+        "minAmount": "3000",
+        "sellPrice": 0.959,
+        "buyPrice": 0.859
+      },
+      {
+        "minAmount": "30000",
+        "sellPrice": 0.969,
+        "buyPrice": 0.869
       }
     ]
   }
@@ -130,15 +127,31 @@ let sellBuy = 'sell';
 
 // Add items to select
 {
-  let cryptoSelect = document.querySelector('.block_crypto .select')
-  addOption(cryptoSelect, cryptoArr)
+  {
+    let cryptoSelect = document.querySelector('.block_crypto .select')
+    addOption(cryptoSelect, cryptoArr)
 
-  function addOption(select, arr) {
-    arr.forEach(obj => {
-      let option = select.appendChild(document.createElement('option'))
-      option.setAttribute('value', obj.name)
-      option.innerHTML = obj.name
-    })
+    function addOption(select, arr) {
+      arr.forEach(obj => {
+        let option = select.appendChild(document.createElement('option'))
+        option.setAttribute('value', obj.name)
+        option.innerHTML = obj.name
+      })
+    }
+  }
+
+  {
+    let fiatItems = ["USD", "RUB"]
+    let fiatSelect = document.querySelector('.block_fiat .select-2')
+    addOption(fiatSelect, fiatItems)
+
+    function addOption(select, arr) {
+      arr.forEach(name => {
+        let option = select.appendChild(document.createElement('option'))
+        option.setAttribute('value', name)
+        option.innerHTML = name
+      })
+    }
   }
 }
 
@@ -157,9 +170,34 @@ let sellBuy = 'sell';
     });
     let selectedInfoInput = document.querySelector('.active-select-value')
     selectedInfoInput.value = document.querySelector('.block_crypto .choices__item.choices__item--selectable').dataset.value
+    selectedInfoInput.setAttribute('data-id', `${document.querySelector('.block_crypto .choices .choices__item.is-selected').dataset.id}`)
     choice.passedElement.element.addEventListener('choice', () => {
       setTimeout(() => {
         selectedInfoInput.value = document.querySelector('.block_crypto .choices__item.choices__item--selectable').dataset.value
+        selectedInfoInput.setAttribute('data-id', `${document.querySelector('.block_crypto .choices .choices__item.is-selected').dataset.id}`)
+        let event = new Event('change')
+        selectedInfoInput.dispatchEvent(event)
+      }, 10);
+    })
+  });
+  document.querySelectorAll('.select-2').forEach(choicesEl => {
+    const choice = new Choices(choicesEl, {
+      classNames: {
+        containerOuter: 'choices block__select',
+      },
+      searchEnabled: false,
+      position: 'bottom',
+      itemSelectText: '',
+      shouldSort: false,
+      placeholder: true,
+    });
+    let selectedInfoInput = document.querySelector('.active-select-fiat-value')
+    selectedInfoInput.value = document.querySelector('.block_fiat .choices__item.choices__item--selectable').dataset.value
+    selectedInfoInput.setAttribute('data-id', `${document.querySelector('.block_fiat .choices .choices__item.is-selected').dataset.id}`)
+    choice.passedElement.element.addEventListener('choice', () => {
+      setTimeout(() => {
+        selectedInfoInput.value = document.querySelector('.block_fiat .choices__item.choices__item--selectable').dataset.value
+        selectedInfoInput.setAttribute('data-id', `${document.querySelector('.block_fiat .choices .choices__item.is-selected').dataset.id}`)
         let event = new Event('change')
         selectedInfoInput.dispatchEvent(event)
       }, 10);
@@ -169,16 +207,31 @@ let sellBuy = 'sell';
 
 // Add Select Icon
 {
-  let i = 1
-  document.querySelectorAll('.block_crypto .choices__item[data-id]').forEach((item, idx) => {
-    document.styleSheets[0].addRule(`.block_crypto .choices__item[data-id="${i}"]::before`, `content: url('@img/crypto-icon-${i}.svg'); width: 26px; height: 26px; object-fit: contain;`)
-    i++
-  })
+  {
+    let i = 1
+    document.querySelectorAll('.block_crypto .choices__item[data-id]').forEach((item, idx) => {
+      document.styleSheets[0].addRule(`.block_crypto .choices__item[data-id="${i}"]::before`, `content: url('@img/crypto-icon-${i}.svg'); width: 26px; height: 26px; object-fit: contain;`)
+      i++
+    })
 
-  let selectedCryptoInput = document.querySelector('.active-select-value')
-  selectedCryptoInput.addEventListener('change', () => {
-    document.styleSheets[0].addRule(`.block_crypto .choices__inner .choices__item[data-id]::before`, `content: url('@img/crypto-icon-${i}.svg'); width: 26px; height: 26px; object-fit: contain;`)
-  })
+    let selectedCryptoInput = document.querySelector('.active-select-value')
+    selectedCryptoInput.addEventListener('change', () => {
+      document.styleSheets[0].addRule(`.block_crypto .choices__inner .choices__item[data-id]::before`, `content: url('@img/crypto-icon-${selectedCryptoInput.getAttribute('data-id')}.svg'); width: 26px; height: 26px; object-fit: contain;`)
+    })
+  }
+
+  {
+    let i = 1
+    document.querySelectorAll('.block_fiat .choices__item[data-id]').forEach((item, idx) => {
+      document.styleSheets[0].addRule(`.block_fiat .choices__item[data-id="${i}"]::before`, `content: url('@img/fiat-icon-${i}.svg'); width: 26px; height: 26px; object-fit: contain;`)
+      i++
+    })
+
+    let selectedFiatInput = document.querySelector('.active-select-fiat-value')
+    selectedFiatInput.addEventListener('change', () => {
+      document.styleSheets[0].addRule(`.block_fiat .choices__inner .choices__item[data-id]::before`, `content: url('@img/fiat-icon-${selectedFiatInput.getAttribute('data-id')}.svg'); width: 26px; height: 26px; object-fit: contain;`)
+    })
+  }
 }
 
 // Change fields at input and change text min-value and max-value
@@ -191,6 +244,7 @@ let sellBuy = 'sell';
   let cryptoMaxValue = document.querySelector('.block_crypto .block__range-text_max')
   let fiatMaxValue = document.querySelector('.block_fiat .block__range-text_max')
   let swapBtn = document.querySelector('.swap')
+  let activeSelectFiatValue = document.querySelector('.active-select-fiat-value')
 
   sellBuyFunc(null, true)
 
@@ -203,6 +257,7 @@ let sellBuy = 'sell';
   cryptoField.addEventListener('input', () => {
     sellBuyFunc(cryptoField)
   })
+
   fiatField.addEventListener('input', () => {
     sellBuyFunc(fiatField)
   })
@@ -211,14 +266,25 @@ let sellBuy = 'sell';
     sellBuyFunc(null, true)
   })
 
+  activeSelectFiatValue.addEventListener('change', () => {
+    sellBuyFunc(null, true)
+  })
+
   function sellBuyFunc(input, bool = false) {
-    let activeCrypto = cryptoArr.find(obj => obj.name == selectedCryptoInput.value)
+    let activeCrypto = JSON.parse(JSON.stringify(cryptoArr.find(obj => obj.name == selectedCryptoInput.value)))
+    if (activeSelectFiatValue.value === 'RUB') {
+      activeCrypto.limits.forEach(limitsObj => {
+        limitsObj.sellPrice *= activeCrypto.usdRub
+        limitsObj.buyPrice *= activeCrypto.usdRub
+      })
+    }
     let idx = 0
     activeCrypto.limits.forEach((obj, index) => {
       if (+cryptoField.value >= +obj.minAmount) {
         idx = index
       }
     });
+
     if (sellBuy === 'sell') {
       if (bool) {
         cryptoField.value = activeCrypto.minValue
@@ -228,7 +294,7 @@ let sellBuy = 'sell';
         fiatMinValue.innerHTML = +(activeCrypto.minValue * activeCrypto.limits[0].sellPrice).toFixed(1)
 
         cryptoMaxValue.innerHTML = activeCrypto.maxValue
-        fiatMaxValue.innerHTML = +(activeCrypto.maxValue * activeCrypto.limits.at(-1).sellPrice).toFixed(1)
+        fiatMaxValue.innerHTML = +(activeCrypto.maxValue * activeCrypto.limits[activeCrypto.limits.length - 1].sellPrice).toFixed(1)
       } else if (input === cryptoField) {
         fiatField.value = +(cryptoField.value * activeCrypto.limits[idx].sellPrice).toFixed(1)
       } else if (input === fiatField) {
@@ -243,7 +309,7 @@ let sellBuy = 'sell';
         fiatMinValue.innerHTML = +(activeCrypto.minValue * activeCrypto.limits[0].buyPrice).toFixed(1)
 
         cryptoMaxValue.innerHTML = activeCrypto.maxValue
-        fiatMaxValue.innerHTML = +(activeCrypto.maxValue * activeCrypto.limits.at(-1).buyPrice).toFixed(1)
+        fiatMaxValue.innerHTML = +(activeCrypto.maxValue * activeCrypto.limits[activeCrypto.limits.length - 1].buyPrice).toFixed(1)
       } else if (input === fiatField) {
         cryptoField.value = +(fiatField.value / activeCrypto.limits[idx].buyPrice).toFixed(1)
       } else if (input === cryptoField) {
